@@ -1,0 +1,133 @@
+<html>
+      <head>
+          {% if title %}
+          <title>{{title}}</title>
+          {% endif %}
+      </head>
+      <body>
+
+      <div><h1 style="text-align: center">Roslina nr {{nrs}}</h1> <a href="/">HOME</a></div>
+          {% block content %}
+           <h1 style="text-align: center">Pomiary</h1>
+                <style>
+table, th, td {
+  border: 1px solid black;
+  padding: 6px;
+  text-align: center;
+}
+table {
+  border-spacing: 1px;
+  width: 100%;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+}
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+     <table>
+         <tbody>
+     <tr><p><b><th>id</th></b> <th><b>temperatura</th></b><th><b>nasłonecznienie</th></b><th><b>wilgotność</th></b><th><b> czas dodania</th></b></p></tr>
+     {% for pomiar in pomia %}
+         {% if pomiar.roslina == nrs %}
+             <tr>
+                 <p><td><a href="/pomiary/{{pomiar.id}}">{{pomiar.id}}</b></a></td> <td><b>{{pomiar.temperatura}}<sup>o</sup>C</sup></b></td><td><b>{{pomiar.naslonecznienie}}%</b></td><td><b>{{pomiar.nawodnienie}}%</b></td><td><b>{{pomiar.czas_dodania}}</b></td></p>
+             </tr>
+             {% endif %}
+     {% endfor %}
+     </tbody>
+     </table>
+
+     <h1 style="text-align: center">Czasy podlewania</h1>
+     <table>
+         <tbody>
+     <tr><p><b><th>id</th></b> <th><b>data</th></b></p></tr>
+     {% for czas in czasy %}
+          {% if czas.roslina == nrs %}
+             <tr>
+                 <p><td><a href="/czasy/{{czas.id}}">{{czas.id}}</b></a></td> <td><b>{{czas.data_operacji}}</b></td></p>
+             </tr>
+             {% endif %}
+     {% endfor %}
+     </tbody>
+     </table>
+
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+  <div id="chart_div"></div>
+
+   <script type="text/javascript">
+
+google.charts.load('current', {
+  callback: function () {
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'czas');
+    data.addColumn('number', 'temperatura');
+    data.addColumn('number', 'naslonecznienie');
+    data.addColumn('number', 'wilgotnosc');
+
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    var options = {
+      title: 'Pomiary',
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      height: 500,
+        timeline: {
+          groupByRowLabel: true },
+      vAxis: {
+            gridlines: {color: 'none'},
+            minValue: 0
+          },
+
+      gridlines: {
+            count: -1,
+            units: {
+              days: {format: ['MMM dd']},
+              hours: {format: ['HH:mm', 'ha']},
+            }
+          },
+          chartArea:{left:'25%',top:50,width:'50%',height:'75%'}
+
+
+    };
+
+    drawChart();
+    //setInterval(drawChart, 10000);
+
+
+    function drawChart() {
+      $.getJSON({
+        url: '/pomiary',
+        type: 'get'
+      }).done(function (jsonData) {
+        for(key in jsonData){
+            if (jsonData[key].roslina === {{nrs}}){
+
+        data.addRows([
+          [new Date(jsonData[key].czas_dodania), jsonData[key].temperatura,jsonData[key].naslonecznienie,jsonData[key].nawodnienie]
+        ]);}}
+        chart.draw(data, options);
+
+
+
+      }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+      });
+    }
+  },
+  packages: ['corechart']
+});
+    </script>
+
+
+
+
+
+          {% endblock %}
+      </body>
+</html>
