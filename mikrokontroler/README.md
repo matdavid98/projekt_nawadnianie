@@ -1,0 +1,1 @@
+https://github.com/matdavid98/projekt_nawadnianie/blob/085885195f5e4c2a78c0190258dae4a6965c21c8/mikrokontroler/prototyp%20mikrokontrolera%20na%20p%C5%82ytce%20stykowej%20po%20wgraniu%20bootloadera.jpg
