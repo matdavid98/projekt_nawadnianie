@@ -1,0 +1,31 @@
+{% extends "strona.html" %}
+
+{% block content %}
+     <h1 style="text-align: center">Rosliny</h1>
+     <style>
+table, th, td {
+  border: 1px solid black;
+  padding: 6px;
+  text-align: center;
+}
+table {
+  border-spacing: 1px;
+  width: 100%;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+}
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+     <table>
+         <tbody>
+     <tr><p><th>id</th> <th><b>nazwa</th><th><b>gatunek</th></b><th><b> czas dodania</th></b></p></tr>
+     {% for roslina in rosliny %}
+             <tr>
+                 <p><td><a href="/rosliny/{{roslina.id}}">{{roslina.id}}</b></a></td><td><b>{{ roslina.nazwa }}</b></td> <td><b>{{roslina.gatunek}}</b></td><td><b>{{roslina.czas_dodania}}</b></td><td><b><a href="/pomiary/lista/{{roslina.id}}">--></a></b></td></p>
+             </tr>
+     {% endfor %}
+     </tbody>
+     </table>
+{% endblock %}
