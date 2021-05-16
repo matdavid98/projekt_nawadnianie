@@ -56,24 +56,27 @@ tr:nth-child(even) {
 
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
-  <div id="chart_div"></div>
+  <div id="dashboard_div">
+      <div id="filter_div"></div>
+      <div id="chart_div"></div>
+    </div>
 
    <script type="text/javascript">
 
 google.charts.load('current', {
   callback: function () {
     var data = new google.visualization.DataTable();
-    data.addColumn('date', 'czas');
+    data.addColumn('date', 'data');
     data.addColumn('number', 'temperatura');
     data.addColumn('number', 'naslonecznienie');
     data.addColumn('number', 'wilgotnosc');
 
 
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    var options = {
+    //var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    /*var options = {
       title: 'Pomiary',
       curveType: 'function',
       legend: { position: 'bottom' },
@@ -95,10 +98,9 @@ google.charts.load('current', {
           chartArea:{left:'25%',top:50,width:'50%',height:'75%'}
 
 
-    };
+    };*/
 
     drawChart();
-    //setInterval(drawChart, 10000);
 
 
     function drawChart() {
@@ -112,7 +114,54 @@ google.charts.load('current', {
         data.addRows([
           [new Date(jsonData[key].czas_dodania), jsonData[key].temperatura,jsonData[key].naslonecznienie,jsonData[key].nawodnienie]
         ]);}}
-        chart.draw(data, options);
+        //chart.draw(data, options);
+       var dashboard = new google.visualization.Dashboard(
+            document.getElementById('dashboard_div'));
+
+        // Create a range slider, passing some options
+        var RangeSlider = new google.visualization.ControlWrapper({
+          'controlType': 'DateRangeFilter',
+          'containerId': 'filter_div',
+          'options': {
+            'filterColumnLabel': 'data',
+            'ui': {'labelStacking': 'vertical'},
+            units: {
+              days: {format: ['MMM dd']},
+              hours: {format: ['HH:mm', 'ha']},
+            }
+          }
+        });
+
+        // Create a pie chart, passing some options
+        var LineChart = new google.visualization.ChartWrapper({
+          'chartType': 'LineChart',
+          'containerId': 'chart_div',
+          'options': {
+      title: 'Pomiary',
+      curveType: 'function',
+      legend: { position: 'bottom' },
+      height: 500,
+        timeline: {
+          groupByRowLabel: true },
+      vAxis: {
+            gridlines: {color: 'none'},
+            minValue: 0
+          },
+
+      gridlines: {
+            count: -1,
+            units: {
+              days: {format: ['MMM dd']},
+              hours: {format: ['HH:mm', 'ha']},
+            }
+          },
+          chartArea:{left:'25%',top:50,width:'50%',height:'75%'}
+
+
+    }
+        });
+       dashboard.bind(RangeSlider, LineChart);
+       dashboard.draw(data);
 
 
 
@@ -121,7 +170,7 @@ google.charts.load('current', {
       });
     }
   },
-  packages: ['corechart']
+  packages: ['corechart', 'controls']
 });
     </script>
 
