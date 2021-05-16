@@ -289,3 +289,49 @@ def new_czas():
     db.session.add(new_czas)
     db.session.commit()
     return render_template('nowy_czas.html',title='IPZ_podlewanie')
+
+
+
+@app.route('/czasy/<id1>', methods=['DELETE'])
+def delete_czas(id1):
+    czas=Czasy_podlania.query.get(id1)
+    if bool(czas)==False:
+       abort(404)
+    Czasy_podlania.query.filter(Czasy_podlania.id == id1).delete()
+    db.session.commit()
+    all_czasy = Czasy_podlania.query.all()
+    result = czasy_podlania_schema.dump(all_czasy)
+    return jsonify(result)
+
+
+
+@app.route('/rosliny/<id1>', methods=['DELETE'])
+def delete_roslina(id1):
+    roslina=Roslina.query.get(id1)
+    if bool(roslina)==False:
+       abort(404)
+    Roslina.query.filter(Roslina.id == id1).delete()
+    db.session.commit()
+    all_czasy = Roslina.query.all()
+    result = rosliny_schema.dump(all_czasy)
+    return jsonify(result)
+
+
+@app.route('/pomiary/<id1>', methods=['DELETE'])
+def delete_pomiar(id1):
+    pomiar=Pomiary.query.get(id1)
+    if bool(pomiar)==False:
+       abort(404)
+    Pomiary.query.filter(Pomiary.id == id1).delete()
+    db.session.commit()
+    all_czasy = Pomiary.query.all()
+    result = pomiary_schema.dump(all_czasy)
+    return jsonify(result)
+
+@app.route("/czasy/szukaj/<r>", methods=["GET"])
+def get_czass(r):
+    czas = Czasy_podlania.query.filter_by(roslina=r).all()
+    if bool(czas)==False:
+       abort(404)
+    result = czasy_podlania_schema.dump(czas)
+    return jsonify(result)
