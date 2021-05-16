@@ -1,0 +1,25 @@
+<html>
+<head>
+{% if title %}
+          <title>{{title}}</title>
+          {% endif %}
+</head>
+ {% block content %}
+ <h1>Dodaj Czas</h1>
+ <div> <a href="/">HOME</a></div>
+
+ <form action="", method="POST">
+     <dl>
+         <dt>Roslina
+         <dd><input type=number name="roslina" required/>
+         <dt>Czas operacji
+         <dd><input type=datetime-local name="data_operacji" required/>
+     </dl)
+     <br>
+
+
+<p><input type=submit value=Enter>
+  </form>
+
+ {% endblock %}
+</html>
