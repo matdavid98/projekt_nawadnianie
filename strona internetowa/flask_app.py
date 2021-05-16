@@ -253,10 +253,6 @@ def strona_rosliny_pomiary(idd):
     nrss=int(idd)
 
 
-
-
-
-
     return render_template('pomiary.html',title='IPZ_podlewanie',rosliny=result,pomia=res,czasy=resul,nrs=nrss)
 
 
@@ -271,3 +267,25 @@ def get_pomiarr(r):
 
 
 
+@app.route('/rosliny/dodaj', methods=['GET', 'POST'])
+def new_roslina():
+    if request.method == 'GET':
+        return render_template('nowa_roslina.html',title='IPZ_podlewanie')
+    nazwa= request.form["nazwa"]
+    gatunek= request.form["gatunek"]
+    new_roslina = Roslina(nazwa, gatunek, datetime.now())
+    db.session.add(new_roslina)
+    db.session.commit()
+    return render_template('nowa_roslina.html',title='IPZ_podlewanie')
+
+
+@app.route('/czasy/dodaj', methods=['GET', 'POST'])
+def new_czas():
+    if request.method == 'GET':
+        return render_template('nowy_czas.html',title='IPZ_podlewanie')
+    roslina= request.form["roslina"]
+    data_operacji=request.form["data_operacji"]
+    new_czas = Czasy_podlania(roslina, data_operacji)
+    db.session.add(new_czas)
+    db.session.commit()
+    return render_template('nowy_czas.html',title='IPZ_podlewanie')
