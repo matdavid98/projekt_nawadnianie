@@ -1,0 +1,24 @@
+<html>
+<head>
+{% if title %}
+          <title>{{title}}</title>
+          {% endif %}
+</head>
+ {% block content %}
+ <h1>Dodaj roslinę</h1>
+<div> <a href="/">HOME</a></div>
+ <form action="", method="POST">
+     <dl>
+         <dt>Nazwa
+         <dd><input type=text name="nazwa" required/>
+         <dt>Gatunek
+         <dd><input type=text name="gatunek" required/>
+     </dl)
+     <br>
+
+
+<p><input type=submit value=Enter>
+  </form>
+
+ {% endblock %}
+</html>
