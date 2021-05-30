@@ -247,7 +247,7 @@ def strona_rosliny_pomiary(idd):
     all_pomiary = Pomiary.query.all()
     res = pomiary_schema.dump(all_pomiary)
 
-    all_czasy = Czasy_podlania.query.all()
+    all_czasy = Czasy_podlania.query.order_by(Czasy_podlania.data_operacji).all()
     resul = czasy_podlania_schema.dump(all_czasy)
 
     nrss=int(idd)
