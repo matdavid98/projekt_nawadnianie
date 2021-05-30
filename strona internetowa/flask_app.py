@@ -335,3 +335,13 @@ def get_czass(r):
        abort(404)
     result = czasy_podlania_schema.dump(czas)
     return jsonify(result)
+
+@app.route("/czasy/najblizszy/<r>", methods=["GET"])
+def get_najczas(r):
+    czas = Czasy_podlania.query.filter_by(roslina=r).filter(Czasy_podlania.data_operacji >= datetime.now()).order_by(Czasy_podlania.data_operacji).first()
+    if bool(czas)==False:
+       abort(404)
+    result = czas_podlania_schema.dump(czas)
+    return jsonify(result)
+
+
