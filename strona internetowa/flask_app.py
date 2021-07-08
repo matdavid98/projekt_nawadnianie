@@ -1,12 +1,12 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request, abort
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import Flask, redirect, render_template, request, jsonify, abort, flash
 from flask_sqlalchemy import SQLAlchemy, Model
 from sqlalchemy import desc ,asc
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields, pprint
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 import  os
 from os.path import isfile, join
 from os import listdir
@@ -125,7 +125,7 @@ def get_roslina(id):
 def add_roslina():
     nazwa= request.json["nazwa"]
     gatunek= request.json["gatunek"]
-    new_roslina = Roslina(nazwa, gatunek, datetime.now())
+    new_roslina = Roslina(nazwa, gatunek, datetime.now()+timedelta(hours=2))
     db.session.add(new_roslina)
     db.session.commit()
     roslina = Roslina.query.get(new_roslina.id)
@@ -165,7 +165,7 @@ def add_pomiar():
     naslonecznienie= request.json["naslonecznienie"]
     nawodnienie= request.json["nawodnienie"]
     temperatura= request.json["temperatura"]
-    new_pomiar = Pomiary(roslina, naslonecznienie, temperatura, nawodnienie, datetime.now())
+    new_pomiar = Pomiary(roslina, naslonecznienie, temperatura, nawodnienie, datetime.now()+timedelta(hours=2))
     db.session.add(new_pomiar)
     db.session.commit()
     pomiar = Pomiary.query.get(new_pomiar.id)
@@ -225,7 +225,8 @@ def change_czas(id):
 
 @app.route('/todo/api/v1.0/time', methods=['GET'])
 def get_time():
-    return jsonify({'time': datetime.now()})
+    time1=datetime.now()+timedelta(hours=2)
+    return jsonify(time1.strftime("%Y-%m-%dT%H:%M:%S"))
 
 
 
@@ -273,7 +274,7 @@ def new_roslina():
         return render_template('nowa_roslina.html',title='IPZ_podlewanie')
     nazwa= request.form["nazwa"]
     gatunek= request.form["gatunek"]
-    new_roslina = Roslina(nazwa, gatunek, datetime.now())
+    new_roslina = Roslina(nazwa, gatunek, datetime.now()+timedelta(hours=2))
     db.session.add(new_roslina)
     db.session.commit()
     return render_template('nowa_roslina.html',title='IPZ_podlewanie')
@@ -338,10 +339,18 @@ def get_czass(r):
 
 @app.route("/czasy/najblizszy/<r>", methods=["GET"])
 def get_najczas(r):
-    czas = Czasy_podlania.query.filter_by(roslina=r).filter(Czasy_podlania.data_operacji >= datetime.now()).order_by(Czasy_podlania.data_operacji).first()
+    czas = Czasy_podlania.query.filter_by(roslina=r).filter(Czasy_podlania.data_operacji >= datetime.now()+timedelta(hours=2)).order_by(Czasy_podlania.data_operacji).first()
     if bool(czas)==False:
        abort(404)
     result = czas_podlania_schema.dump(czas)
     return jsonify(result)
 
+
+@app.route("/czasy/aktualne/<r>", methods=["GET"])
+def get_czasyaktualne(r):
+    czas = Czasy_podlania.query.filter_by(roslina=r).filter(Czasy_podlania.data_operacji >= datetime.now()+timedelta(hours=2)).order_by(Czasy_podlania.data_operacji).all()
+    if bool(czas)==False:
+       abort(404)
+    result = czasy_podlania_schema.dump(czas)
+    return jsonify(result)
 
