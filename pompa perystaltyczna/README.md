@@ -1,7 +1,7 @@
 
 <h1> OPIS!</h1>
 <img src="arduino.jpg" alt="drawing" width="1000"/>
-
+Podłączenie przewodów do mikrokontrolera
 <img src="całość 2.jpg" alt="drawing" width="1000"/>
 
 <img src="całość.jpg" alt="drawing" width="1000"/>
